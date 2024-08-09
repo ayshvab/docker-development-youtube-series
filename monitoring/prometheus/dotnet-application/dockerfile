@@ -1,4 +1,12 @@
-FROM mcr.microsoft.com/dotnet/core/sdk:2.2-stretch as debug
+FROM mcr.microsoft.com/dotnet/core/sdk:2.2 as debug
+
+# Update repository configuration for Debian Stretch to archive
+RUN true > /etc/apt/sources.list
+RUN echo "deb [trusted=yes] http://archive.debian.org/debian/ stretch main" >> /etc/apt/sources.list \
+    echo "deb-src [trusted=yes] http://archive.debian.org/debian/ stretch main" >> /etc/apt/sources.list \
+    echo "deb [trusted=yes] http://archive.debian.org/debian/ stretch-backports main" >> /etc/apt/sources.list \
+    echo "deb [trusted=yes] http://archive.debian.org/debian-security/ stretch/updates main" >> /etc/apt/sources.list \
+    echo "deb-src [trusted=yes] http://archive.debian.org/debian-security/ stretch/updates main" >> /etc/apt/sources.list
 
 #install debugger for NET Core
 RUN apt-get update
@@ -19,10 +27,12 @@ ENTRYPOINT ["dotnet", "run"]
 
 ###########START NEW IMAGE###########################################
 
-FROM mcr.microsoft.com/dotnet/core/aspnet:2.2-stretch-slim as prod
+FROM mcr.microsoft.com/dotnet/core/aspnet:2.2 AS prod
 
 RUN mkdir /app/
 WORKDIR /app/
 COPY --from=debug /out/ /app/
 RUN chmod +x /app/ 
 CMD dotnet work.dll
+
+

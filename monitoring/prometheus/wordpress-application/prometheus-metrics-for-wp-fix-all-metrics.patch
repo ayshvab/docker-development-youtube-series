@@ -1,0 +1,28 @@
+diff --git a/includes/classes/Default_Metrics_Loader.php b/includes/classes/Default_Metrics_Loader.php
+index 1b09e82..fdc0bde 100644
+--- a/includes/classes/Default_Metrics_Loader.php
++++ b/includes/classes/Default_Metrics_Loader.php
+@@ -35,7 +35,8 @@ class Default_Metrics_Loader
+     {
+         if (!$this->metrics_loaded) {
+ 
+-            require_once ABSPATH . 'wp-admin/includes/update.php';
++            // require_once ABSPATH . 'wp-admin/includes/update.php';
++            require_once ABSPATH . 'wp-admin/includes/admin.php';
+ 
+             new Sizes_Information_Metric();
+             new Info_Metric();
+diff --git a/includes/classes/metrics/Options_Autoloaded_Size_Metric.php b/includes/classes/metrics/Options_Autoloaded_Size_Metric.php
+index 887103f..421d703 100644
+--- a/includes/classes/metrics/Options_Autoloaded_Size_Metric.php
++++ b/includes/classes/metrics/Options_Autoloaded_Size_Metric.php
+@@ -13,7 +13,8 @@ class Options_Autoloaded_Size_Metric extends Abstract_Gauge_Metric
+     function get_metric_value()
+     {
+         global $wpdb;
+-        return $wpdb->get_var("SELECT ROUND(SUM(LENGTH(option_value))/ 1024) FROM $wpdb->options WHERE `autoload` = 'yes'"); // phpcs:ignore WordPress.DB
++        $result = $wpdb->get_var("SELECT ROUND(SUM(LENGTH(option_value))/ 1024) FROM $wpdb->options WHERE `autoload` = 'yes'"); // phpcs:ignore WordPress.DB
++        return $result ?? 0;
+     }
+ 
+     function get_help_text(): string
